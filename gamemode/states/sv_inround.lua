@@ -107,7 +107,7 @@ function STATE:PlayerSpawn(ply)
 		return
 	end
 	
-	GAMEMODE.BaseClass:PlayerSpawn(ply)
+	HS.StateManager.CallDefaultFunction("PlayerSpawn", ply)
 end
 
 STATE.Countdown = HS.Countdown.New("HS.InRound.Countdown", function()

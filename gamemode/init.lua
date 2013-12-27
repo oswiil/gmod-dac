@@ -3,6 +3,7 @@ AddCSLuaFile("cl_logging.lua")
 AddCSLuaFile("cl_statemanager.lua")
 AddCSLuaFile("cl_countdown.lua")
 AddCSLuaFile("cl_deferfunc.lua")
+AddCSLuaFile("cl_scoreboard.lua")
 AddCSLuaFile("gui/mapvote.lua")
 AddCSLuaFile("gui/toggleimage.lua")
 AddCSLuaFile("shared.lua")
@@ -19,6 +20,7 @@ include("sv_player.lua")
 include("sv_countdown.lua")
 include("sv_particlefx.lua")
 include("sv_statemanager.lua")
+include("stamina/sv_stamina.lua")
 
 function GM:Initialize()
 	HS.StateManager.ChangeState("pregame")
@@ -55,6 +57,11 @@ end
 -- This will be overidden by states, so do the normal action in a hook (the function doesn't return anyway)
 HS.StateManager.AddDefaultFunction("DoPlayerDeath", function()
 	return
+end)
+
+HS.StateManager.AddDefaultFunction("PlayerSpawn", function(GM, ply)
+	GAMEMODE.BaseClass:PlayerSpawn(ply)
+	ply:SetModel("models/player/group01/male_0" .. math.random(1,9) .. ".mdl")
 end)
 
 hook.Add("DoPlayerDeath", "HS.DoPlayerDeath", function(ply, attacker, dmg)

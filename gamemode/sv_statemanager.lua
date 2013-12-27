@@ -63,6 +63,14 @@ function StateManager.CallFunction(name, ...)
 	end
 end
 
+function StateManager.CallDefaultFunction(name, ...)
+	if DefaultGMFunctions[name] then
+		return DefaultGMFunctions[name](GAMEMODE, ...)
+	else
+		return GAMEMODE.BaseClass[name](GAMEMODE.BaseClass, ...)
+	end
+end
+
 function StateManager.AddDefaultFunction(name, func)
 	DefaultGMFunctions[name] = func
 end

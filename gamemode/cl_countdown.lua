@@ -81,14 +81,3 @@ hook.Add("Think", "HS.Countdown.TickCheck", function()
 end)
 
 HS.Countdown = Countdown
-
--- button17.wav
--- coach_go_here.wav
-
--- ware/countdown_tick_high.wav
--- ware/countdown_tick_low.wav
-
--- ui/system_message_alert.wav
-
--- START ROUND ui/trade_ready.wav
---             ui/duel_challenge_accepted_with_restriction.wav

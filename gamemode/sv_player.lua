@@ -4,7 +4,9 @@ function PlyMeta:MakeSeeker()
 	self:SetTeam(HS.TeamManager.TEAM_SEEKING)
 	self:AllowFlashlight(true)
 	self:SetWalkSpeed(200)
+	self.WalkSpeed = 200
 	self:SetRunSpeed(360)
+	self.RunSpeed = 360
 	self:StripWeapons()
 
 	if self:FlashlightIsOn() then
@@ -20,7 +22,9 @@ function PlyMeta:MakeHider()
 	self:SetTeam(HS.TeamManager.TEAM_HIDING)
 	self:AllowFlashlight(false)
 	self:SetWalkSpeed(190)
+	self.WalkSpeed = 190
 	self:SetRunSpeed(320)
+	self.RunSpeed = 320
 	self:StripWeapons()
 
 	if self:FlashlightIsOn() then
@@ -36,7 +40,9 @@ function PlyMeta:MakeWaiting()
 	self:SetTeam(HS.TeamManager.TEAM_WAITING)
 	self:AllowFlashlight(true)
 	self:SetWalkSpeed(200)
+	self.WalkSpeed = 200
 	self:SetRunSpeed(360)
+	self.RunSpeed = 360
 	self:StripWeapons()
 
 	self:SetPlayerColor(Vector(0,0.6,0.2))
@@ -56,4 +62,12 @@ local oldSetTeam = PlyMeta.SetTeam
 function PlyMeta:SetTeam(newTeamID)
 	GAMEMODE:OnPlayerChangedTeam(self, self:Team(), newTeamID)
 	oldSetTeam(self, newTeamID)
+end
+
+function PlyMeta:GetWalkSpeed()
+	return self.WalkSpeed or 200
+end
+
+function PlyMeta:GetRunSpeed()
+	return self.RunSpeed or 360
 end

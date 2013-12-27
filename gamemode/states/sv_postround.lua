@@ -19,6 +19,7 @@ function STATE:HandleHidersLose(originalSeeker)
 
 	for _,ply in ipairs(HS.TeamManager.GetSeekingPlayers()) do
 		if ply == originalSeeker then
+			ply:AddFrags(2)
 			ply:AttachEffect("superrare_confetti_green")
 		else
 			ply:AttachEffect("unusual_storm")
@@ -34,6 +35,7 @@ function STATE:HandleHidersWin()
 	)
 
 	for _,ply in ipairs(HS.TeamManager.GetHidingPlayers()) do
+		ply:AddFrags(2)
 		ply:AttachEffect("superrare_confetti_green")
 	end
 
@@ -49,6 +51,12 @@ function STATE:BeginState(endType, originalSeeker)
 		self:HandleHidersWin()
 	elseif endType == "hiderslose" then
 		self:HandleHidersLose(originalSeeker)
+	end
+
+	-- Set everyone's stamina to max
+	for _,ply in ipairs(HS.TeamManager.GetActivePlayers()) do
+		ply:SetStamina(ply:GetMaxStamina())
+		ply:SyncStamina()
 	end
 
 	self.Countdown:Start(HS.Config.PostRoundTime:GetInt())

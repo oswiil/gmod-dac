@@ -13,6 +13,11 @@ function STATE:BeginState()
 
 	self.Countdown:Start(HS.Config.MapVoteTime:GetInt())
 
+	-- Make everyone waiting
+	for _,ply in ipairs(HS.TeamManager.GetActivePlayers()) do
+		ply:SetTeam(HS.TeamManager.TEAM_WAITING)
+	end
+
 	hook.Add("Move", "HS.MapVote.RestrictMovement", function(ply, mv)
 		return true
 	end)
@@ -67,11 +72,12 @@ STATE.Countdown = HS.Countdown.New("HS.MapVote.Countdown", function()
 		net.WriteUInt(winningID, 32)
 	net.Broadcast()
 
-	HS.Log("[MapVote] %q won the vote - changing in 2 seconds", HS.MapList[winningID])
+	local winningMapName = HS.MapList[winningID]
+	HS.Log("[MapVote] %q won the vote - changing in 4 seconds", winningMapName)
 
-	timer.Create("HS.MapVote.ChangeMap", 2, 1, function()
+	timer.Create("HS.MapVote.ChangeMap", 4, 1, function()
 		HS.Log("[MapVote] Changing to new map")
-		HS.ChatPrintAll(Color(255,255,255), "(Would change map now)")
+		RunConsoleCommand("changelevel", winningMapName)
 	end)
 end)
 

@@ -17,8 +17,11 @@ function STATE:BeginState()
 	HS.Globals.RoundCount = HS.Globals.RoundCount + 1
 
 	-- Make everyone a hider for simplicity
+	-- Update everyone's stamina while we're at it
 	for _,ply in ipairs(HS.TeamManager.GetActivePlayers()) do
 		ply:MakeHider()
+		ply:SetStamina(ply:GetMaxStamina())
+		ply:SyncStamina()
 	end
 
 	-- Pick a seeker and change their team
