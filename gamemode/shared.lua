@@ -9,6 +9,8 @@ include("sh_teammanager.lua")
 
 HS.Globals.RegisterReplicated("RoundCount", 0)
 
+--[[
 PrecacheParticleSystem("bday_confetti")
 PrecacheParticleSystem("unusual_storm")
 PrecacheParticleSystem("superrare_confetti_green")
+]]

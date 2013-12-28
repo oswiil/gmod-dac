@@ -110,6 +110,33 @@ function STATE:PlayerSpawn(ply)
 	HS.StateManager.CallDefaultFunction("PlayerSpawn", ply)
 end
 
+function STATE:GetFallDamage(ply, spd)
+	local time = math.Round(spd / 666, 1)
+	local jmp = ply:GetJumpPower()
+	if spd >= 600 then
+		ply:EmitSound("player/pl_fleshbreak.wav", 75, math.random(80, 90))
+		ply:EmitSound("vo/npc/male01/pain0"..math.random(1,9)..".wav",80,math.random(98,102))
+		ply:ViewPunch(Angle(0,math.random(-spd/45,spd/45),0))
+		ply:SetJumpPower(85)
+
+		-- Lose 20% stamina for each multiple of 666 speed
+		ply:SetStamina(ply:GetStamina() - (0.2 * ply:GetMaxStamina() * time))
+		ply:SyncStamina()
+
+		timer.Simple(time,function() ply:SetJumpPower(jmp) end)
+	end
+	if spd >= 760 then
+		ply:EmitSound("physics/cardboard/cardboard_box_strain1.wav",75,math.random(100,110))
+		timer.Simple(math.random(2, 4),function()
+			local which = math.random(1, 5)
+			local how = math.random(98, 102)
+			ply:EmitSound("vo/npc/male01/moan0"..which..".wav", 76, how)
+		end)
+	end
+
+	return 0
+end
+
 STATE.Countdown = HS.Countdown.New("HS.InRound.Countdown", function()
 	-- If the countdown ends, the hiders have won
 	HS.StateManager.ChangeState("postround", "hiderswin", STATE.OriginalSeeker)

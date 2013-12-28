@@ -28,35 +28,12 @@ function SWEP:PrimaryAttack()
 	self.Weapon:SetNextPrimaryFire(CurTime() + 0.25)
 	self.Weapon:SetNextSecondaryFire(CurTime() + 0.25)
 
-	local currentStateName = HS.StateManager.CurrentState().Name
+	if not IsValid(self.Owner) then return end
+	self.Owner:LagCompensation(true)
 
-	-- Seekers can't do anything in the hiding time time
-	if self.Owner:Team() == HS.TeamManager.TEAM_SEEKING and currentStateName == "hidingtime" then return end
+	if SERVER then self:ServerHandleAttack() end
 
-	if CLIENT then return end
-
-	-- If we're in the post round, do the sounds
-	if currentStateName == "postround" then
-		self.Owner:EmitSound("misc/happy_birthday_tf_" .. math.random(10,29) .. ".wav", 75, math.random(97,103))
-	end
-
-	local ent = self.Owner:GetEyeTrace()
-	local entply = ent.Entity
-	local entdis = self.Owner:EyePos():Distance(ent.HitPos)
-	self.Owner:ViewPunch(Angle(-1,0,0))
-	
-	if (entply:GetClass() == "func_breakable_surf" or entply:GetClass() == "func_breakable") and entdis <= 100 then
-		entply:Fire("RemoveHealth", 25)
-		self.Owner:EmitSound("physics/body/body_medium_impact_hard"..math.random(2,3)..".wav",78,math.random(98,102))
-	end
-
-	-- Only allow seekers to catch people
-	if self.Owner:Team() ~= HS.TeamManager.TEAM_SEEKING or currentStateName ~= "inround" then return end
-	
-	if entply:IsPlayer() and entdis <= 120 and entply:Team() == HS.TeamManager.TEAM_HIDING then
-		entply:ViewPunch(Angle(8,math.random(-16,16),0))
-		HS.StateManager.CurrentState():HandleCaught(self.Owner, entply)
-	end
+	self.Owner:LagCompensation(false)
 end
 
 function SWEP:SecondaryAttack()

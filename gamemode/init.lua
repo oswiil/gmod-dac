@@ -4,6 +4,7 @@ AddCSLuaFile("cl_statemanager.lua")
 AddCSLuaFile("cl_countdown.lua")
 AddCSLuaFile("cl_deferfunc.lua")
 AddCSLuaFile("cl_scoreboard.lua")
+AddCSLuaFile("cl_help.lua")
 AddCSLuaFile("gui/mapvote.lua")
 AddCSLuaFile("gui/toggleimage.lua")
 AddCSLuaFile("shared.lua")
@@ -21,6 +22,10 @@ include("sv_countdown.lua")
 include("sv_particlefx.lua")
 include("sv_statemanager.lua")
 include("stamina/sv_stamina.lua")
+include("sv_rtv.lua")
+include("sv_pushprops.lua")
+
+util.AddNetworkString("HS.ShowHelp")
 
 function GM:Initialize()
 	HS.StateManager.ChangeState("pregame")
@@ -79,3 +84,13 @@ end)
 
 -- Remove default Garry's Mod change team command
 concommand.Remove("changeteam")
+
+-- Help screen
+function GM:ShowHelp(ply)
+	net.Start("HS.ShowHelp")
+	net.Send(ply)
+end
+
+hook.Add("PlayerInitialSpawn", "HS.ShowFirstHelp", function(ply)
+	GAMEMODE:ShowHelp(ply)
+end)

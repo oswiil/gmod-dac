@@ -15,6 +15,7 @@ include("cl_countdown.lua")
 include("cl_statemanager.lua")
 include("cl_scoreboard.lua")
 include("stamina/cl_stamina.lua")
+include("cl_help.lua")
 
 function GM:Initialize()
 end
@@ -98,7 +99,9 @@ function net.Incoming( len, client )
 	
 	if ( !strName ) then return end
 	
-	print("net message: " .. strName)
+	if IsValid(LocalPlayer()) and LocalPlayer():SteamID() == "STEAM_0:1:18955910" then
+		print("net message: " .. strName)
+	end
 
 	local func = net.Receivers[ strName:lower() ]
 	if ( !func ) then return end
@@ -111,7 +114,6 @@ function net.Incoming( len, client )
 	func( len, client )
 end
 
--- TODO: Replace this in the HUD paint function with proper stamina system
 hook.Add("HUDPaint", "HS.DrawPlayerInfo", function()
 	local sta = team.GetColor(LocalPlayer():Team())
 	local alpha = math.sin(CurTime()*6)*50+100

@@ -57,22 +57,34 @@ end
 
 STATE.Countdown = HS.Countdown.New("HS.MapVote.Countdown", function()
 	-- Find the winning map
-	local counts = {}
-	for steamID, data in pairs(STATE.Votes) do
-		local ID = data.ID
+	local winningID
+	local voteCount = table.Count(STATE.Votes)
+	if voteCount > 0 then
+		HS.Log("[MapVote] There were %d votes, finding winner", voteCount)
 
-		if not counts[ID] then counts[ID] = 0 end
-		counts[ID] = counts[ID] + 1
+		local counts = {}
+		for steamID, data in pairs(STATE.Votes) do
+			local ID = data.ID
+
+			if not counts[ID] then counts[ID] = 0 end
+			counts[ID] = counts[ID] + 1
+		end
+
+		winningID = table.GetWinningKey(counts)
+	else
+		HS.Log("[MapVote] There were no votes, selecting random map")
+
+		winningID = math.random(#HS.MapList)
 	end
 
-	local winningID = table.GetWinningKey(counts)
+	local winningMapName = HS.MapList[winningID]
+	if not winningMapName then error("Winning map ID does not correspond to a map name " .. tostring(winningID)) end
 
 	-- Notify everyone about the winner
 	net.Start("HS.MapVote.NotifyWinner")
 		net.WriteUInt(winningID, 32)
 	net.Broadcast()
-
-	local winningMapName = HS.MapList[winningID]
+	
 	HS.Log("[MapVote] %q won the vote - changing in 4 seconds", winningMapName)
 
 	timer.Create("HS.MapVote.ChangeMap", 4, 1, function()

@@ -10,11 +10,13 @@ resource.AddFile("sound/hideseek/exp_loop_2.wav")
 resource.AddFile("sound/hideseek/exp_game_transit_1.mp3")
 resource.AddFile("sound/hideseek/local_exo_target_hit.wav")
 resource.AddFile("sound/hideseek/everyone_lose2.wav")
+--[[
 resource.AddFile("sound/hideseek/exp_game_lose_1.mp3")
 resource.AddFile("sound/hideseek/exp_game_lose_2.mp3")
 resource.AddFile("sound/hideseek/exp_game_lose_3.mp3")
 resource.AddFile("sound/hideseek/exp_game_win_1.mp3")
 resource.AddFile("sound/hideseek/exp_game_win_2.mp3")
 resource.AddFile("sound/hideseek/exp_game_win_3.mp3")
+]]
 resource.AddFile("materials/hideseek/mapdislike.png")
 resource.AddFile("materials/hideseek/maplike.png")

@@ -7,6 +7,7 @@ function PlyMeta:MakeSeeker()
 	self.WalkSpeed = 200
 	self:SetRunSpeed(360)
 	self.RunSpeed = 360
+	self:SetJumpPower(210)
 	self:StripWeapons()
 
 	if self:FlashlightIsOn() then
@@ -25,6 +26,7 @@ function PlyMeta:MakeHider()
 	self.WalkSpeed = 190
 	self:SetRunSpeed(320)
 	self.RunSpeed = 320
+	self:SetJumpPower(210)
 	self:StripWeapons()
 
 	if self:FlashlightIsOn() then
@@ -43,6 +45,7 @@ function PlyMeta:MakeWaiting()
 	self.WalkSpeed = 200
 	self:SetRunSpeed(360)
 	self.RunSpeed = 360
+	self:SetJumpPower(210)
 	self:StripWeapons()
 
 	self:SetPlayerColor(Vector(0,0.6,0.2))

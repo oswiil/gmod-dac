@@ -102,19 +102,71 @@ function SWEP:Reload()
 	self.Owner:EmitSound(table.Random(tauntTable), 89, math.random(98,102))
 end
 
-function SWEP:Think()
-	if self.Owner:Team() ~= HS.TeamManager.TEAM_SEEKING then return end
-	if HS.StateManager.CurrentState().Name ~= "inround" then return end
+function SWEP:GetTrace(range)
+	local spos = self.Owner:GetShootPos()
+	local sdest = spos + (self.Owner:GetAimVector() * range)
 
-	local range = 36+(self.Owner:Ping()/24)
-	local zup = (self.Owner:Crouching()) and 62 or 76
-	local zdn = (self.Owner:GetGroundEntity() == NULL) and -76 or -4
-	for k,v in pairs(ents.FindInBox(self.Owner:GetPos()+Vector(range,range,zdn),self.Owner:GetPos()+Vector(-range,-range,zup))) do
-		if v:IsValid() and v:IsPlayer() and v:Team() == HS.TeamManager.TEAM_HIDING then
-			v:ViewPunch(Angle(8,math.random(-16,16),0))
-			self.Owner:ViewPunch(Angle(-1,0,0))
-			HS.StateManager.CurrentState():HandleCaught(self.Owner, v)
+	local kmins = Vector(1,1,1) * -10
+	local kmaxs = Vector(1,1,1) * 10
+
+	local tr = util.TraceHull({start=spos, endpos=sdest, filter=self.Owner, mask=MASK_SHOT_HULL, mins=kmins, maxs=kmaxs})
+
+	-- Hull might hit environment stuff that line does not hit
+	if not IsValid(tr.Entity) then
+		tr = util.TraceLine({start=spos, endpos=sdest, filter=self.Owner, mask=MASK_SHOT_HULL})
+	end
+
+	return tr
+end
+
+function SWEP:ServerHandleAttack()
+	local currentStateName = HS.StateManager.CurrentState().Name
+
+	-- Seekers can't do anything in the hiding time time
+	if self.Owner:Team() == HS.TeamManager.TEAM_SEEKING and currentStateName == "hidingtime" then return end
+
+	-- If we're in the post round, do the sounds
+	if currentStateName == "postround" then
+		self.Owner:EmitSound("misc/happy_birthday_tf_" .. math.random(10,29) .. ".wav", 75, math.random(97,103))
+	end
+
+	self.Owner:ViewPunch(Angle(-1,0,0))
+
+	-- Tagging/damage stuff
+	local tr = self:GetTrace(110)
+
+	local hitEnt = tr.Entity
+
+	if tr.Hit and tr.HitNonWorld and IsValid(hitEnt) then
+		if hitEnt:IsPlayer() 
+		   and hitEnt:Team() == HS.TeamManager.TEAM_HIDING 
+		   and self.Owner:Team() == HS.TeamManager.TEAM_SEEKING
+		   and currentStateName == "inround" then
+
+			hitEnt:ViewPunch(Angle(8,math.random(-16,16),0))
+			HS.StateManager.CurrentState():HandleCaught(self.Owner, hitEnt)
+
+		elseif hitEnt:GetClass() == "func_breakable_surf" or hitEnt:GetClass() == "func_breakable" then
+
+			hitEnt:Fire("RemoveHealth", 25)
+			self.Owner:EmitSound("physics/body/body_medium_impact_hard" .. math.random(2,3) .. ".wav", 78, math.random(98,102))
+
 		end
 	end
 end
 
+function SWEP:Think()
+	if not IsValid(self.Owner) then return end
+	if self.Owner:Team() ~= HS.TeamManager.TEAM_SEEKING then return end
+	if HS.StateManager.CurrentState().Name ~= "inround" then return end
+
+	local tr = self:GetTrace(80)
+	local hitEnt = tr.Entity
+
+	if tr.Hit and tr.HitNonWorld and IsValid(hitEnt) then
+		if hitEnt:IsPlayer() and hitEnt:Team() == HS.TeamManager.TEAM_HIDING then
+			hitEnt:ViewPunch(Angle(8,math.random(-16,16),0))
+			HS.StateManager.CurrentState():HandleCaught(self.Owner, hitEnt)
+		end
+	end
+end

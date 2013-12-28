@@ -19,6 +19,11 @@ function STATE:EndState()
 		self.BeatLoop:Stop()
 		self.BeatLoop = nil
 	end
+
+	for _,ply in ipairs(player.GetAll()) do
+		ply:StopParticles()
+		ply:StopParticleEmission()
+	end
 end
 
 function STATE:ActivateCountdown()

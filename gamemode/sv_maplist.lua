@@ -3,7 +3,10 @@ HS.MapList = {
 	"de_cbble",
 	"cs_italy",
 	"de_inferno",
-	"de_chateau"
+	"de_chateau",
+	"ttt_rooftops_a2_f1",
+	"ttt_67thway_v4",
+	"ttt_whitehouse_b2"
 }
 
 function HS.AddMap(name)
